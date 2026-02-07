@@ -27,5 +27,5 @@ if __name__ == "__main__":
         app,
         port=int(os.environ.get('PORT', 8080)),
         proxy_headers=True,
-        forwarded_allow_ips="*",
+        forwarded_allow_ips=os.environ.get('FORWARDED_ALLOW_IPS', '127.0.0.1'),
     )

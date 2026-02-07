@@ -2,7 +2,7 @@
 The Model for the Users Table
 """
 
-from sqlalchemy import func, Integer, String, TIMESTAMP
+from sqlalchemy import func, Integer, String, TIMESTAMP, desc, asc
 from sqlalchemy.orm import mapped_column, MappedColumn
 from sqlalchemy.sql.expression import select
 
@@ -151,7 +151,20 @@ class User(Base):
             The Users
         """
 
-        result = await db.execute(select(User).order_by(f"{sort_by} {order}").limit(limit))
+        # Whitelist allowed columns to prevent SQL injection
+        allowed_columns = {'id', 'username', 'points', 'created_at', 'last_seen', 'display_name'}
+        if sort_by not in allowed_columns:
+            raise ValueError(f"Invalid sort_by column: {sort_by}")
+
+        # Whitelist order direction
+        if order.lower() not in {'asc', 'desc'}:
+            raise ValueError(f"Invalid order: {order}")
+
+        # Use SQLAlchemy column object instead of string interpolation
+        column = getattr(User, sort_by)
+        order_func = desc if order.lower() == 'desc' else asc
+
+        result = await db.execute(select(User).order_by(order_func(column)).limit(limit))
         return list(result.scalars().all())
 
 

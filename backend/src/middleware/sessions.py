@@ -6,6 +6,7 @@ from fastapi import Depends, Request
 from fastapi.exceptions import HTTPException
 
 import jwt
+import os
 from datetime import datetime, timedelta, timezone
 
 from ..db import get_db, DataBase, User, Session
@@ -14,7 +15,10 @@ from ..db import get_db, DataBase, User, Session
 class SessionManager:
     """Session-Tokens Handler"""
 
-    SECRET_KEY = "Hello-World!"
+    SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
+
+    if not SECRET_KEY:
+        raise RuntimeError("JWT_SECRET_KEY environment variable must be set")
 
 
     @staticmethod

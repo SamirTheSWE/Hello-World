@@ -36,8 +36,8 @@ class HelloWorldApp(FastAPI):
                 'http://localhost,http://localhost:3000'
             ).split(","),
             allow_credentials=True,
-            allow_methods=["*"],
-            allow_headers=["*"],
+            allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            allow_headers=["Content-Type", "Authorization"],
         )
         
         for router in routers:
