@@ -23,7 +23,7 @@ app.use(
 );
 
 
-app.get(`${basePath}*`, (request, response) => {
+app.get(`${basePath}{*path}`, (request, response) => {
     response.sendFile(path.join(__dirname, '..', 'build', 'index.html'));
 });
 
