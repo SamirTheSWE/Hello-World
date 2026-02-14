@@ -15,10 +15,12 @@ from ..db import get_db, DataBase, User, Session
 class SessionManager:
     """Session-Tokens Handler"""
 
-    SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
-
-    if not SECRET_KEY:
-        raise RuntimeError("JWT_SECRET_KEY environment variable must be set")
+    @classmethod
+    def _secret_key(cls) -> str:
+        key = os.environ.get('JWT_SECRET_KEY')
+        if not key:
+            raise RuntimeError("JWT_SECRET_KEY environment variable must be set")
+        return key
 
 
     @staticmethod
@@ -52,7 +54,7 @@ class SessionManager:
         }
         token = jwt.encode(
             data,
-            key=SessionManager.SECRET_KEY,
+            key=SessionManager._secret_key(),
             algorithm="HS256"
         )
 
@@ -88,7 +90,7 @@ class SessionManager:
         try:
             data = jwt.decode(
                 token,
-                key=SessionManager.SECRET_KEY,
+                key=SessionManager._secret_key(),
                 algorithms=["HS256"]
             )
         except jwt.ExpiredSignatureError:
