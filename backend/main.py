@@ -13,7 +13,7 @@ if __name__ == "__main__":
     if os.name == "nt":
         os.system("cls")
 
-    env_files = [".env", ".env.production"]
+    env_files = [".env.production", ".env.development", ".env"]
     for env_file in env_files:
         if os.path.exists(env_file):
             load_dotenv(env_file)
